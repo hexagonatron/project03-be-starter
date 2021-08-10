@@ -6,16 +6,20 @@ const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./schemas');
 const { authMiddleware } = require('./utils/auth');
 const db = require('./config/connection');
+const { graphqlUploadExpress } = require('graphql-upload');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: authMiddleware
+  context: authMiddleware,
+  uploads: false
 });
 
 app.use(logger('dev'));
+
+app.use(graphqlUploadExpress());
 
 server.applyMiddleware({ app });
 
